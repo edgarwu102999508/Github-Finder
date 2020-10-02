@@ -17,7 +17,7 @@ const Users = ({ users, loading }) => {
   }
 };
 
-Users.prototype = {
+Users.protoTypes = {
   users: PropTypes.array.isRequired,
   loading: PropTypes.bool.isRequired,
 };
