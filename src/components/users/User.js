@@ -1,17 +1,21 @@
 import React, { Component, Fragment } from "react";
-import Spinner from "../layout/spinner.gif";
+import Spinner from "../layout/Spinner";
+import Repos from "../repos/Repos";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 export class User extends Component {
   componentDidMount() {
     this.props.getUser(this.props.match.params.username);
+    this.props.getUserRepos(this.props.match.params.username);
   }
 
   static propTypes = {
     loading: PropTypes.bool.isRequired,
     user: PropTypes.object.isRequired,
+    repos: PropTypes.array.isRequired,
     getUser: PropTypes.func.isRequired,
+    getUserRepos: PropTypes.func.isRequired,
   };
 
   render() {
@@ -31,8 +35,7 @@ export class User extends Component {
       hireable,
     } = this.props.user;
 
-    const { loading } = this.props;
-
+    const { loading, repos } = this.props;
     if (loading) return <Spinner />;
 
     return (
@@ -40,12 +43,7 @@ export class User extends Component {
         <Link to='/' className='btn btn-light'>
           Back to Search
         </Link>
-        Hireable:{" "}
-        {hireable ? (
-          <i className='fas fa-check text-success' />
-        ) : (
-          <i className='fas fa-times-circle text-danger' />
-        )}
+
         <div className='card grid-2'>
           <div className='all-center'>
             <img
@@ -55,7 +53,19 @@ export class User extends Component {
               style={{ width: "100px" }}
             />
             <h1>{name}</h1>
-            <p>Location: {location}</p>
+            <p>
+              <strong>Location:</strong> {location}
+            </p>
+            <p>
+              <strong>Hireable: </strong>
+              <span>
+                {hireable ? (
+                  <i className='fas fa-check text-success' />
+                ) : (
+                  <i className='fas fa-times-circle text-danger' />
+                )}
+              </span>
+            </p>
           </div>
           <div>
             {bio && (
@@ -64,7 +74,12 @@ export class User extends Component {
                 <p>{bio}</p>
               </Fragment>
             )}
-            <a href={html_url} className='btn btn-dark my-1'>
+            <a
+              href={html_url}
+              target='_blank'
+              rel='noopener noreferrer'
+              className='btn btn-dark my-1'
+            >
               Visit Github Profile
             </a>
             <ul>
@@ -98,6 +113,7 @@ export class User extends Component {
           <div className='badge badge-light'>Public Repos: {public_repos}</div>
           <div className='badge badge-dark'>Public Gists: {public_gists}</div>
         </div>
+        <Repos repos={repos} />
       </Fragment>
     );
   }
